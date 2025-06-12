@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.example.nazyshine.repository.UserRepository;
 
 /**
- * AuthController handles authentication-related operations in the Nazyshine application.
+ * AuthController handles authentication-related operations in the Nazyshine applications.
  * It includes endpoints for testing user details and redirecting to the appropriate dashboard based on user roles.
  */
 @Controller
