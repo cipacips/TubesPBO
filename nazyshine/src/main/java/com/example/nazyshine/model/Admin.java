@@ -3,10 +3,6 @@ package com.example.nazyshine.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-// Import yang tidak digunakan dihapus untuk kebersihan kode
-// import jakarta.persistence.OneToMany;
-// import jakarta.persistence.CascadeType;
-// import java.util.List;
 
 /**
  * Class representing `Admin`.

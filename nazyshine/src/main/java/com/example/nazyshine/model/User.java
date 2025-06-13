@@ -8,6 +8,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
+import jakarta.persistence.Column; // <--- PASTIKAN IMPORT INI ADA
+import jakarta.persistence.Enumerated; // PASTIKAN IMPORT INI ADA
+import jakarta.persistence.EnumType; // PASTIKAN IMPORT INI ADA
 
 /**
  * Abstract base class for User.
@@ -25,6 +28,9 @@ public abstract class User {
     protected String email;
     protected String username;
     protected String password;
+
+    @Column(columnDefinition = "VARCHAR(20)") // <--- BARIS INI YANG HARUS DITAMBAHKAN
+    @Enumerated(EnumType.STRING)
     protected Role role;
 
     // Metode login() dan logout() dihapus karena otentikasi/otorisasi dihandle oleh Spring Security.

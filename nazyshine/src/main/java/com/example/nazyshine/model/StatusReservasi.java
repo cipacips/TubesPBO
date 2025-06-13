@@ -7,5 +7,6 @@ package com.example.nazyshine.model;
 public enum StatusReservasi {
     PENDING,
     DIKONFIRMASI,
-    SELESAI
+    SELESAI,
+    CANCELED // Menambahkan status CANCELED untuk konsistensi di frontend dan backend
 }

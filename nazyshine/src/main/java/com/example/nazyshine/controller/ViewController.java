@@ -7,7 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import com.example.nazyshine.model.Pelanggan;
+import com.example.nazyshine.model.Pelanggan; // Import Pelanggan jika diperlukan
 import com.example.nazyshine.service.PelangganService; // Menggunakan PelangganService
 
 /**
@@ -31,7 +31,7 @@ public class ViewController {
      * @return The name of the JSP page `dashboard_pelanggan`
      */
     @GetMapping("/dashboard_customer")
-    public String dashboardPelanggan(Authentication auth, Model model) {
+    public String dashboardPelanggan(Authentication auth, Model model) { // Mengubah nama metode
         String username = auth.getName();
         model.addAttribute("username", username);
         return "dashboard_pelanggan"; // Nama JSP page konsisten
@@ -44,8 +44,8 @@ public class ViewController {
      * @param model Model to add attributes that will be passed to the JSP page
      * @return The name of the JSP page `dashboard_admin`
      */
-    @GetMapping("/dashboard_admin")
-    public String dashboardAdmin(Authentication auth, Model model) {
+    @GetMapping("/dashboard_admin") // Mengubah endpoint dari /dashboard_pegawai
+    public String dashboardAdmin(Authentication auth, Model model) { // Mengubah nama metode
         String username = auth.getName();
         model.addAttribute("username", username);
         return "dashboard_admin"; // Nama JSP page konsisten
@@ -56,8 +56,8 @@ public class ViewController {
      *
      * @return The name of the JSP page `crud_pelanggan`
      */
-    @GetMapping("/dashboard_admin/pelanggan")
-    public String showCrudPelangganPage() {
+    @GetMapping("/dashboard_admin/pelanggan") // Mengubah endpoint dari /dashboard_pegawai/customer
+    public String showCrudPelangganPage() { // Mengubah nama metode
         return "crud_pelanggan"; // Nama JSP page konsisten
     }
 
@@ -66,8 +66,8 @@ public class ViewController {
      *
      * @return The name of the JSP page `crud_admin`
      */
-    @GetMapping("/dashboard_admin/admin")
-    public String showCrudAdminPage() {
+    @GetMapping("/dashboard_admin/admin") // Mengubah endpoint dari /dashboard_pegawai/pegawai
+    public String showCrudAdminPage() { // Mengubah nama metode
         return "crud_admin"; // Nama JSP page konsisten
     }
 
@@ -87,8 +87,8 @@ public class ViewController {
      *
      * @return The name of the JSP page `search_username`
      */
-    @GetMapping("/dashboard_admin/search_username")
-    public String showSearchUsernamePage() {
+    @GetMapping("/dashboard_admin/search_username") // Mengubah endpoint dari search_nim
+    public String showSearchUsernamePage() { // Mengubah nama metode
         return "search_username"; // Nama JSP page konsisten
     }
 
@@ -97,8 +97,8 @@ public class ViewController {
      *
      * @return The name of the JSP page `search_id`
      */
-    @GetMapping("/dashboard_admin/search_id")
-    public String showSearchByIdPage() {
+    @GetMapping("/dashboard_admin/search_id") // Mengubah endpoint dari dashboard_pegawai
+    public String showSearchByIdPage() { // Mengubah nama metode
         return "search_id";
     }
 
@@ -151,6 +151,16 @@ public class ViewController {
     public String updateReservasiStatusPage() {
         return "update_reservasi_status"; // Nama JSP page konsisten
     }
+    
+    /**
+     * Displays the registration page for new customers.
+     * This is a public page.
+     * @return The name of the JSP page `register`
+     */
+    @GetMapping("/register") // New mapping for the registration page
+    public String showRegisterPage() {
+        return "register"; // Returns register.jsp
+    }
 
     /**
      * Redirects to the appropriate dashboard based on user's role after login.
@@ -176,6 +186,8 @@ public class ViewController {
      * @throws RuntimeException if the customer is not found
      */
     private Integer findPelangganIdByUsername(String username) { // Tipe return dan nama metode konsisten
-        return pelangganService.getPelangganByUsername(username).getId(); // Menggunakan pelangganService, konsisten
+        // Menggunakan pelangganService untuk mengambil Pelanggan berdasarkan username
+        Pelanggan pelanggan = pelangganService.getPelangganByUsername(username); 
+        return pelanggan.getId(); // Mengembalikan ID pelanggan
     }
 }
