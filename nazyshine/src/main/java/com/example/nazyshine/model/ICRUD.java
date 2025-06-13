@@ -9,4 +9,6 @@ public interface ICRUD {
     void update(Object obj);
 
     void delete(Object obj);
+
+    bjkfkesfhksjehfkj
 }
