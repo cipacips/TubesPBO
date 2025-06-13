@@ -1,8 +1,8 @@
-package com.example.nazyshine.repository; // Changed package name
+package com.example.nazyshine.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.example.nazyshine.model.Layanan; // Changed model import
+import com.example.nazyshine.model.Layanan;
 
-public interface LayananRepository extends JpaRepository<Layanan, Long> { // Changed interface name
+public interface LayananRepository extends JpaRepository<Layanan, Integer> {
 }

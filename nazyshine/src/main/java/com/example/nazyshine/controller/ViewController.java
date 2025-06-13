@@ -6,8 +6,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import com.example.nazyshine.model.Customer;
-import com.example.nazyshine.repository.CustomerRepository;
+import com.example.nazyshine.model.Pelanggan;
+import com.example.nazyshine.repository.PelangganRepository;
 
 /**
  * Spring MVC Controller for managing navigation pages in a JSP-based application.
@@ -20,7 +20,7 @@ import com.example.nazyshine.repository.CustomerRepository;
 public class ViewController {
 
     @Autowired
-    private CustomerRepository customerRepository;
+    private PelangganRepository customerRepository;
 
     /**
      * Displays the customer dashboard page.
@@ -159,7 +159,7 @@ public class ViewController {
      */
     private Long findCustomerIdByUsername(String username) {
         return customerRepository.findByUsername(username)
-                .map(Customer::getId)
+                .map(Pelanggan::getId)
                 .orElseThrow(() -> new RuntimeException("Customer not found with username: " + username));
     }
 }

@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.nazyshine.model.Customer;
+import com.example.nazyshine.model.Pelanggan;
 import com.example.nazyshine.model.Layanan; // Changed from MataKuliah
 import com.example.nazyshine.model.User;
 import com.example.nazyshine.repository.UserRepository;
-import com.example.nazyshine.service.CustomerService;
+import com.example.nazyshine.service.PelangganService;
 
 /**
  * CustomerController is a REST controller that handles CRUD operations for Customer entities
@@ -26,10 +26,10 @@ import com.example.nazyshine.service.CustomerService;
  */
 @RestController
 @RequestMapping("/api/customer")
-public class CustomerController {
+public class PelangganController {
 
     @Autowired
-    private CustomerService customerService;
+    private PelangganService customerService;
 
     @Autowired
     private UserRepository userRepository;
@@ -40,7 +40,7 @@ public class CustomerController {
      * @return a ResponseEntity containing the created Customer object.
      */
     @PostMapping
-    public ResponseEntity<Customer> createCustomer(@RequestBody Customer customer) {
+    public ResponseEntity<Pelanggan> createCustomer(@RequestBody Pelanggan customer) {
         return ResponseEntity.ok(customerService.createCustomer(customer));
     }
 
@@ -49,7 +49,7 @@ public class CustomerController {
      * * @return a ResponseEntity containing a list of all Customer records.
      */
     @GetMapping
-    public ResponseEntity<List<Customer>> getAllCustomer() {
+    public ResponseEntity<List<Pelanggan>> getAllCustomer() {
         return ResponseEntity.ok(customerService.getAllCustomer());
     }
 
@@ -63,7 +63,7 @@ public class CustomerController {
         if (id == 0) {
             return ResponseEntity.badRequest().body("ID Customer tidak valid.");
         }
-        Customer customer = customerService.getCustomerWithDetails(id);
+        Pelanggan customer = customerService.getCustomerWithDetails(id);
         return ResponseEntity.ok(customer);
     }
 
@@ -74,7 +74,7 @@ public class CustomerController {
      * @return a ResponseEntity containing the updated Customer object.
      */
     @PutMapping("/{id}")
-    public ResponseEntity<Customer> updateCustomer(@PathVariable Long id, @RequestBody Customer customer) {
+    public ResponseEntity<Pelanggan> updateCustomer(@PathVariable Long id, @RequestBody Pelanggan customer) {
         return ResponseEntity.ok(customerService.updateCustomer(id, customer));
     }
 
@@ -116,8 +116,8 @@ public class CustomerController {
                 .orElseThrow(() -> new RuntimeException("User not found with username: " + username));
 
         // Cast to Customer
-        if (user instanceof Customer) {
-            Customer customer = (Customer) user;
+        if (user instanceof Pelanggan) {
+            Pelanggan customer = (Pelanggan) user;
             System.out.println("DEBUG: Customer ID = " + customer.getId());
             return ResponseEntity.ok(Map.of("customerId", customer.getId()));
         } else {

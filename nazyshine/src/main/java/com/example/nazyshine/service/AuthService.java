@@ -1,10 +1,10 @@
-package com.example.nazyshine.service; // Changed package name
+package com.example.nazyshine.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.nazyshine.model.User; // Changed model import
-import com.example.nazyshine.repository.UserRepository; // Changed repository import
+import com.example.nazyshine.model.User;
+import com.example.nazyshine.repository.UserRepository;
 
 /**
  * Service class responsible for handling authentication-related operations.
@@ -37,15 +37,15 @@ public class AuthService {
      * or {@code null} if the authentication fails.
      */
     public User authenticate(String username, String password) {
-        // Search user by name
+        // Cari user berdasarkan username
         User user = userRepository.findByUsername(username).orElse(null);
 
-        // Password verification
+        // Verifikasi password
         if (user != null && user.getPassword().equals(password)) {
             return user;
         }
 
-        // Return null if authentication fails
+        // Jika gagal, kembalikan null
         return null;
     }
 }

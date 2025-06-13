@@ -1,10 +1,11 @@
-package com.example.nazyshine.repository; // Changed package name
+package com.example.nazyshine.repository;
+
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.example.nazyshine.model.User; // Changed model import
+import com.example.nazyshine.model.User;
 
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<User, Integer> {
     Optional<User> findByUsername(String username);
 }

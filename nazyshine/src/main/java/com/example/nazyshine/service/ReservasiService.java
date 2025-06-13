@@ -3,10 +3,10 @@ package com.example.nazyshine.service; // Changed package name
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.nazyshine.model.Customer; // Changed model import
+import com.example.nazyshine.model.Pelanggan; // Changed model import
 import com.example.nazyshine.model.Layanan; // Changed model import
 import com.example.nazyshine.model.Reservasi; // Changed model import
-import com.example.nazyshine.repository.CustomerRepository; // Changed repository import
+import com.example.nazyshine.repository.PelangganRepository; // Changed repository import
 import com.example.nazyshine.repository.ReservasiRepository; // Changed repository import
 import com.example.nazyshine.repository.LayananRepository; // Changed repository import
 
@@ -14,7 +14,7 @@ import com.example.nazyshine.repository.LayananRepository; // Changed repository
  * Service layer for managing the {@link Reservasi} relationship.
  *
  * <p>This service class provides business logic for managing the relationship between
- * {@link Customer} and {@link Layanan} entities. It handles assigning, removing, and retrieving
+ * {@link Pelanggan} and {@link Layanan} entities. It handles assigning, removing, and retrieving
  * {@link Reservasi} instances from the database.</p>
  */
 @Service
@@ -24,24 +24,24 @@ public class ReservasiService { // Changed class name
     private ReservasiRepository reservasiRepository; // Changed repository name
 
     @Autowired
-    private CustomerRepository customerRepository; // Changed repository name
+    private PelangganRepository customerRepository; // Changed repository name
 
     @Autowired
     private LayananRepository layananRepository; // Changed repository name
 
     /**
-     * Assigns a {@link Layanan} to a {@link Customer}.
+     * Assigns a {@link Layanan} to a {@link Pelanggan}.
      *
      * <p>This method creates a new {@link Reservasi} relationship between the given
-     * {@link Customer} and {@link Layanan} by their respective IDs.</p>
+     * {@link Pelanggan} and {@link Layanan} by their respective IDs.</p>
      *
-     * @param customerId The ID of the {@link Customer} to assign.
+     * @param customerId The ID of the {@link Pelanggan} to assign.
      * @param layananId The ID of the {@link Layanan} to assign.
      * @return The saved {@link Reservasi} relationship.
-     * @throws RuntimeException if either the {@link Customer} or {@link Layanan} is not found.
+     * @throws RuntimeException if either the {@link Pelanggan} or {@link Layanan} is not found.
      */
     public Reservasi assignLayananToCustomer(Long customerId, Long layananId) { // Changed method name and parameters
-        Customer customer = customerRepository.findById(customerId) // Changed variable and findById parameter
+        Pelanggan customer = customerRepository.findById(customerId) // Changed variable and findById parameter
                 .orElseThrow(() -> new RuntimeException("Customer not found with ID: " + customerId)); // Changed error message
 
         Layanan layanan = layananRepository.findById(layananId) // Changed variable and findById parameter
@@ -55,13 +55,13 @@ public class ReservasiService { // Changed class name
     }
 
     /**
-     * Deletes a {@link Reservasi} relationship based on the given {@link Customer} and
+     * Deletes a {@link Reservasi} relationship based on the given {@link Pelanggan} and
      * {@link Layanan} IDs.
      *
-     * <p>This method removes the relationship between a {@link Customer} and a {@link Layanan}
+     * <p>This method removes the relationship between a {@link Pelanggan} and a {@link Layanan}
      * if it exists in the database.</p>
      *
-     * @param customerId The ID of the {@link Customer}.
+     * @param customerId The ID of the {@link Pelanggan}.
      * @param layananId The ID of the {@link Layanan}.
      * @throws RuntimeException if the relationship is not found for the given IDs.
      */

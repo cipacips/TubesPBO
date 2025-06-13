@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>NazyShine Login</title>
+
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <style>
         body {
             background-color: #f4f4f4;
@@ -15,7 +17,6 @@
             justify-content: center;
             margin: 0;
             font-family: 'Arial', sans-serif;
-            color: black;
         }
 
         .login-card {
@@ -28,11 +29,11 @@
         }
 
         .login-card .card-header {
-            background-color: black;
+            background-color: #ff66a5;
             color: #ffffff;
             text-align: center;
             padding: 20px;
-            font-size: 20px;
+            font-size: 22px;
             font-weight: bold;
         }
 
@@ -46,16 +47,15 @@
             border: 1px solid #ccc;
             padding: 10px 15px;
             font-size: 16px;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
 
         .form-control:focus {
-            border-color: black;
-            box-shadow: 0 0 5px rgba(85, 85, 85, 0.5);
+            border-color: #ff66a5;
+            box-shadow: 0 0 5px rgba(255, 102, 165, 0.5);
         }
 
         .btn-primary {
-            background-color: black;
+            background-color: #ff66a5;
             border: none;
             border-radius: 5px;
             padding: 10px 20px;
@@ -64,33 +64,45 @@
         }
 
         .btn-primary:hover {
-            background-color: #777;
+            background-color: #ff85b3;
             transform: scale(1.02);
         }
 
         .text-small {
             font-size: 12px;
-            color: black;
             text-align: center;
         }
 
         .text-small a {
-            color: black;
+            color: #ff66a5;
             text-decoration: none;
         }
 
         .text-small a:hover {
             text-decoration: underline;
         }
+
+        .error-message {
+            color: red;
+            font-size: 14px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
     </style>
 </head>
 <body>
 <div class="login-card">
     <div class="card-header">
-        Igracias❌ IVamos✅
+        NazyShine Login
     </div>
     <div class="card-body">
-        <h2 class="text-center mb-4">Halo 👋</h2>
+        <h2 class="text-center mb-4">Selamat Datang ✨</h2>
+
+        <!-- Menampilkan error jika login gagal -->
+        <div class="error-message" id="errorMessage" style="display: none;">
+            Username atau password salah.
+        </div>
+
         <form method="post" action="/login">
             <div class="mb-3">
                 <label for="username" class="form-label">Username</label>
@@ -102,10 +114,20 @@
             </div>
             <button type="submit" class="btn btn-primary w-100">Login</button>
         </form>
-        <p class="text-small mt-3">Forgot your password? <a href="#">Click here</a></p>
+
+        <p class="text-small mt-3">Lupa password? <a href="#">Klik di sini</a></p>
     </div>
 </div>
+
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Script untuk deteksi error parameter dari URL -->
+<script>
+    const params = new URLSearchParams(window.location.search);
+    if (params.has('error')) {
+        document.getElementById('errorMessage').style.display = 'block';
+    }
+</script>
 </body>
 </html>

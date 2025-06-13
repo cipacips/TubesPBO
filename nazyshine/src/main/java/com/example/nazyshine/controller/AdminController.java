@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.nazyshine.model.Pegawai;
-import com.example.nazyshine.service.PegawaiService;
+import com.example.nazyshine.model.Admin;
+import com.example.nazyshine.service.AdminService;
 
 /**
  * PegawaiController is a REST controller that handles CRUD operations for the Pegawai entity.
@@ -22,10 +22,10 @@ import com.example.nazyshine.service.PegawaiService;
  */
 @RestController
 @RequestMapping("/api/pegawai")
-public class PegawaiController {
+public class AdminController {
 
     @Autowired
-    private PegawaiService pegawaiService;
+    private AdminService pegawaiService;
 
     /**
      * Creates a new Pegawai record.
@@ -33,7 +33,7 @@ public class PegawaiController {
      * @return a ResponseEntity containing the created Pegawai object.
      */
     @PostMapping
-    public ResponseEntity<Pegawai> createPegawai(@RequestBody Pegawai pegawai) {
+    public ResponseEntity<Admin> createPegawai(@RequestBody Admin pegawai) {
         return ResponseEntity.ok(pegawaiService.createPegawai(pegawai));
     }
 
@@ -42,7 +42,7 @@ public class PegawaiController {
      * * @return a ResponseEntity containing a list of all Pegawai records.
      */
     @GetMapping
-    public ResponseEntity<List<Pegawai>> getAllPegawai() {
+    public ResponseEntity<List<Admin>> getAllPegawai() {
         return ResponseEntity.ok(pegawaiService.getAllPegawai());
     }
 
@@ -52,7 +52,7 @@ public class PegawaiController {
      * @return a ResponseEntity containing the Pegawai record with the specified ID.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Pegawai> getPegawaiById(@PathVariable Long id) {
+    public ResponseEntity<Admin> getPegawaiById(@PathVariable Long id) {
         return ResponseEntity.ok(pegawaiService.getPegawaiById(id));
     }
 
@@ -63,7 +63,7 @@ public class PegawaiController {
      * @return a ResponseEntity containing the updated Pegawai record.
      */
     @PutMapping("/{id}")
-    public ResponseEntity<Pegawai> updatePegawai(@PathVariable Long id, @RequestBody Pegawai pegawai) {
+    public ResponseEntity<Admin> updatePegawai(@PathVariable Long id, @RequestBody Admin pegawai) {
         return ResponseEntity.ok(pegawaiService.updatePegawai(id, pegawai));
     }
 

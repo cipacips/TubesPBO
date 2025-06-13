@@ -1,9 +1,12 @@
-package com.example.nazyshine.repository; // Changed package name
+package com.example.nazyshine.repository;
 
-import java.util.Optional;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
-import com.example.nazyshine.model.Reservasi; // Changed model import
 
-public interface ReservasiRepository extends JpaRepository<Reservasi, Long> { // Changed interface name
-    Optional<Reservasi> findByCustomerIdAndLayananId(Long customerId, Long layananId); // Changed method name parameters
+import com.example.nazyshine.model.Reservasi;
+import com.example.nazyshine.model.Pelanggan;
+
+public interface ReservasiRepository extends JpaRepository<Reservasi, Long> {
+    List<Reservasi> findByCustomer(Pelanggan customer);
 }

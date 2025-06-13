@@ -19,7 +19,7 @@ public enum Role {
      * </ul>
      * </p>
      */
-    CUSTOMER, // Changed from MAHASISWA
+    PELANGGAN,
 
     /**
      * Role for Pegawai (employee) staff.
@@ -32,5 +32,5 @@ public enum Role {
      * </ul>
      * </p>
      */
-    PEGAWAI // Changed from LAA
+    ADMIN
 }
