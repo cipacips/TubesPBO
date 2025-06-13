@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservation History & Status</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --header-bg: #c24483; /* Dark background for header */
+            --header-text: #ffffff; /* White text for header */
+            
+            --light-pink-bg: #FFDDEE; /* Pink muda untuk background utama halaman */
+
+            --content-bg: #f8f8f8; /* Light gray/white for general content cards */
+            --title-bg: #f492a9; /* Light pink for "Reservation History" title highlight */
+            --table-header-bg: #FF69B4; /* Pink untuk header tabel */
+            --table-header-text: #ffffff; /* White text for table header */
+            
+            /* **PERUBAHAN DI SINI: WARNA BACKGROUND UNTUK BARIS DATA TABEL** */
+            --table-row-odd-bg: #FFFDFD; /* Putih bersih dengan sedikit sentuhan hangat untuk baris ganjil */
+            --table-row-even-bg: #FDF5F6; /* Pink sangat, sangat pucat untuk baris genap */
+
+            --status-confirmed: #66BB6A; /* Green yang sedikit lebih kalem */
+            --status-finished: #4CAF50; /* Tetap green yang solid */
+            --status-canceled: #EF5350; /* Red yang sedikit lebih kalem */
+            
+            --text-dark: #333;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--light-pink-bg); 
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: var(--text-dark);
+        }
+
+        .header {
+            background-color: var(--header-bg);
+            color: var(--header-text);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 20px;
+            font-weight: 600;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .header .menu-icon {
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .main-container {
+            flex-grow: 1; 
+            position: relative; 
+            padding: 20px;
+            padding-top: 80px; 
+            box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; 
+        }
+        
+        /* Background image overlay */
+        .main-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://via.placeholder.com/1200x600/FFD1DC/FFD1DC?text=Salon+Background'); 
+            background-size: cover;
+            background-position: center;
+            opacity: 0.7; 
+            z-index: -1; 
+        }
+
+        .reservation-section {
+            width: 90%;
+            max-width: 800px; 
+            margin-top: 20px; 
+            position: relative;
+            z-index: 1; 
+        }
+
+        .reservation-title {
+            background-color: var(--title-bg); 
+            color: var(--text-dark);
+            padding: 15px 25px;
+            font-size: 24px;
+            font-weight: 700;
+            display: inline-block; 
+            margin-bottom: 30px;
+            border-radius: 5px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5); 
+        }
+
+        .reservation-table-container {
+            background-color: transparent; 
+            border-radius: 10px;
+            overflow: hidden; 
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15); 
+        }
+
+        .reservation-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .reservation-table th,
+        .reservation-table td {
+            padding: 15px; 
+            text-align: left;
+            border-bottom: 1px solid #eee; 
+            font-size: 16px; 
+        }
+
+        .reservation-table th {
+            background-color: var(--table-header-bg); 
+            color: var(--table-header-text);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px; 
+        }
+
+        /* **PERUBAHAN DI SINI: STRIPED ROWS** */
+        .reservation-table tbody tr:nth-child(odd) td {
+            background-color: var(--table-row-odd-bg); /* Warna untuk baris ganjil */
+            transition: background-color 0.3s ease;
+        }
+
+        .reservation-table tbody tr:nth-child(even) td {
+            background-color: var(--table-row-even-bg); /* Warna untuk baris genap */
+            transition: background-color 0.3s ease;
+        }
+
+        .reservation-table tbody tr:hover td {
+            background-color: #FEE7F2; /* Pink sangat muda saat hover, berlaku untuk keduanya */
+            cursor: pointer; 
+        }
+
+        .reservation-table tr:last-child td {
+            border-bottom: none; 
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+            text-align: center;
+            min-width: 80px; 
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+            text-transform: capitalize; 
+        }
+
+        .status-confirmed {
+            background-color: var(--status-confirmed); 
+            color: white;
+        }
+
+        .status-finished {
+            background-color: var(--status-finished); 
+            color: white;
+        }
+
+        .status-canceled {
+            background-color: var(--status-canceled); 
+            color: white;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .reservation-title {
+                font-size: 20px;
+                padding: 12px 20px;
+            }
+            .reservation-table th,
+            .reservation-table td {
+                padding: 10px;
+                font-size: 14px;
+            }
+            .status-badge {
+                padding: 6px 10px;
+                font-size: 12px;
+                min-width: 60px;
+            }
+            .header {
+                font-size: 18px;
+                padding: 10px 15px;
+            }
+            .main-container {
+                padding: 15px;
+                padding-top: 60px; 
+            }
+        }
+
+        @media (max-width: 480px) {
+            .reservation-title {
+                font-size: 18px;
+                padding: 10px 15px;
+            }
+            .reservation-table th,
+            .reservation-table td {
+                font-size: 12px;
+            }
+            .reservation-table thead {
+                display: none; 
+            }
+            /* Styling for stacked rows on mobile, ensuring background color */
+            .reservation-table tr {
+                display: block; 
+                margin-bottom: 15px;
+                border: 1px solid #eee;
+                border-radius: 5px;
+                box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
+                /* Gunakan warna dasar yang sama untuk mobile card background */
+                background-color: var(--table-row-odd-bg); 
+            }
+            /* Untuk memastikan background inner cells di mobile tetap transparan atau sesuai */
+            .reservation-table tr:nth-child(even) td,
+            .reservation-table tr:nth-child(odd) td {
+                background-color: transparent; /* Cells di dalam card akan transparan */
+            }
+            .reservation-table td {
+                display: block; 
+                text-align: right;
+                border-bottom: 1px dashed #eee;
+                position: relative;
+                padding-left: 50%; 
+            }
+            .reservation-table td::before {
+                content: attr(data-label); 
+                position: absolute;
+                left: 10px;
+                width: 45%;
+                padding-right: 10px;
+                white-space: nowrap;
+                text-align: left;
+                font-weight: 600;
+                color: #555;
+            }
+            .reservation-table td:last-child {
+                border-bottom: none;
+            }
+            .reservation-table tr:last-child {
+                margin-bottom: 0;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="header">
+        <span>History & Status</span>
+        <div class="menu-icon"><i class="fas fa-bars"></i></div>
+    </div>
+
+    <div class="main-container">
+        <div class="reservation-section">
+            <h1 class="reservation-title">Reservation History</h1>
+            
+            <div class="reservation-table-container">
+                <table class="reservation-table">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Name</th>
+                            <th>Date</th>
+                            <th>Service</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td data-label="No">1</td>
+                            <td data-label="Name">Kim Jiwon</td>
+                            <td data-label="Date">06/05/2025</td>
+                            <td data-label="Service">Facial Treatment</td>
+                            <td data-label="Status"><span class="status-badge status-confirmed">Confirmed</span></td>
+                        </tr>
+                        <tr>
+                            <td data-label="No">2</td>
+                            <td data-label="Name">Selena Gomez</td>
+                            <td data-label="Date">01/05/2025</td>
+                            <td data-label="Service">Hair Cut</td>
+                            <td data-label="Status"><span class="status-badge status-finished">Finished</span></td>
+                        </tr>
+                        <tr>
+                            <td data-label="No">3</td>
+                            <td data-label="Name">Hailey Bieber</td>
+                            <td data-label="Date">10/05/2025</td>
+                            <td data-label="Service">Body Massage</td>
+                            <td data-label="Status"><span class="status-badge status-canceled">Canceled</span></td>
+                        </tr>
+                        <tr>
+                            <td data-label="No">4</td>
+                            <td data-label="Name">Katy Pery</td>
+                            <td data-label="Date">15/05/2025</td>
+                            <td data-label="Service">Manicure Pedicure</td>
+                            <td data-label="Status"><span class="status-badge status-finished">Finished</span></td>
+                        </tr>
+                        <tr>
+                            <td data-label="No">5</td>
+                            <td data-label="Name">Lady Gaga</td>
+                            <td data-label="Date">02/05/2025</td>
+                            <td data-label="Service">Hair Colour</td>
+                            <td data-label="Status"><span class="status-badge status-finished">Finished</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

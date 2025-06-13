@@ -1,172 +1,614 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CRUD Mata Kuliah</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Admin - Manage Services</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        :root {
+            --primary-pink: #FF69B4;
+            --dark-pink: #E91E63;
+            --light-pink: #FFD1DC;
+            --text-dark: #333;
+            --text-light: #fff;
+            --bg-gray: #f8f8f8;
+            --sidebar-bg: #ffe4e1; /* Light pink for sidebar */
+            --header-top-bg: #dbd2df; /* Greyish pink for top header */
+        }
+
         body {
-            background-color: white;
-            color: black;
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-gray);
+            display: flex;
+            min-height: 100vh;
         }
-        .navbar {
-            background-color: black;
+
+        /* --- Sidebar Styles --- */
+        .sidebar {
+            width: 250px;
+            background-color: var(--sidebar-bg);
+            padding: 20px;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
-        .navbar-brand{
-            color: white;
+
+        .profile-section {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            width: 100%;
+        }
+
+        .profile-pic {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 10px;
+            border: 3px solid var(--primary-pink); /* Pink border around profile pic */
+        }
+
+        .profile-name {
+            font-size: 18px;
             font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 5px;
         }
-        .navbar-brand:hover{
-            color: #ffffff;
+
+        .profile-role {
+            font-size: 14px;
+            color: #777;
         }
-        .btn-primary {
-            background-color: #007bff;
-            border-color: #007bff;
+
+        .sidebar-nav {
+            width: 100%;
         }
-        .card {
-            background-color: white;
-            color: black;
+
+        .sidebar-nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
         }
-        .card:hover {
-            background-color: #ecebeb;
+
+        .sidebar-nav li {
+            margin-bottom: 10px;
+        }
+
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: var(--text-dark);
+            text-decoration: none;
+            font-size: 16px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .sidebar-nav a i {
+            margin-right: 10px;
+            color: var(--primary-pink);
+        }
+
+        .sidebar-nav a:hover,
+        .sidebar-nav a.active {
+            background-color: var(--primary-pink);
+            color: var(--text-light);
+        }
+
+        .sidebar-nav a:hover i,
+        .sidebar-nav a.active i {
+            color: var(--text-light);
+        }
+
+        .sidebar-nav .submenu {
+            padding-left: 30px; /* Indent submenu items */
+            list-style: none;
+            margin-top: 5px;
+        }
+
+        .sidebar-nav .submenu a {
+            padding: 8px 15px;
+            font-size: 15px;
+        }
+        .sidebar-nav .submenu a i {
+            font-size: 12px; /* Smaller icon for submenu */
+            margin-right: 8px;
+        }
+
+        /* --- Main Content Area --- */
+        .content-area {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--bg-gray);
+        }
+
+        .top-header {
+            background-color: var(--header-top-bg);
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 18px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .top-nav {
+            display: flex;
+            gap: 20px;
+        }
+
+        .top-nav a {
+            color: var(--text-dark);
+            text-decoration: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .top-nav a:hover {
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .hero-section {
+            position: relative;
+            width: 100%;
+            height: 250px; /* Adjust height as needed */
+            background-image: url('https://via.placeholder.com/1200x300/FFC0CB/FFC0CB?text=Pink+Lips+Background'); /* Placeholder for lips background */
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: var(--text-dark);
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.1));
+            z-index: 1;
+        }
+
+        .search-bar {
+            position: relative;
+            z-index: 2;
+            width: 60%;
+            max-width: 500px;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 12px 20px;
+            border: 1px solid #ccc;
+            border-radius: 25px;
+            font-size: 16px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            outline: none;
+        }
+
+        .page-title {
+            position: relative;
+            z-index: 2;
+            font-family: 'Playfair Display', serif;
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .management-section {
+            padding: 30px 40px;
+            flex-grow: 1;
+            background-color: var(--bg-gray); /* Match body background */
+        }
+
+        .service-table-container {
+            background-color: var(--text-light);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .service-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .service-table th,
+        .service-table td {
+            padding: 15px 20px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+            font-size: 16px;
+            vertical-align: middle;
+        }
+
+        .service-table th {
+            background-color: var(--primary-pink);
+            color: var(--text-light);
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        /* Specific header for Action column to match image style */
+        .service-table th:last-child {
+            text-align: center;
+        }
+
+        .service-table td:last-child {
+            text-align: center;
+        }
+
+        .service-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .action-buttons button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            margin: 0 5px;
+            padding: 0;
+            color: #888; /* Default icon color */
+            transition: color 0.2s ease;
+        }
+
+        .action-buttons button:hover .fa-pen-to-square {
+            color: #4CAF50; /* Green on hover for edit */
+        }
+
+        .action-buttons button:hover .fa-times-circle {
+            color: #f44336; /* Red on hover for delete */
+        }
+        
+        .add-new-service {
+            text-align: right;
+            margin-top: 20px;
+        }
+
+        .add-new-service a {
+            color: var(--primary-pink);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            font-size: 16px;
+        }
+
+        .add-new-service a i {
+            margin-right: 5px;
+        }
+
+        .add-new-service a:hover {
+            text-decoration: underline;
+        }
+
+        /* --- Footer Styles --- */
+        .footer-admin {
+            background-color: var(--primary-pink);
+            color: var(--text-light);
+            padding: 30px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+
+        .footer-section {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .footer-section h3 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .footer-section ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 8px;
+        }
+
+        .footer-section ul li a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 15px;
+            opacity: 0.9;
+            transition: opacity 0.3s ease;
+        }
+
+        .footer-section ul li a:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+
+        .footer-social-icons a {
+            color: var(--text-light);
+            font-size: 20px;
+            margin-right: 15px;
+            opacity: 0.9;
+            transition: opacity 0.3s ease;
+        }
+
+        .footer-social-icons a:hover {
+            opacity: 1;
+        }
+
+        /* --- Responsive Design --- */
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 200px;
+            }
+            .service-table th,
+            .service-table td {
+                padding: 12px 15px;
+                font-size: 15px;
+            }
+            .page-title {
+                font-size: 30px;
+            }
+            .hero-section {
+                height: 200px;
+            }
+            .footer-admin {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            .footer-section {
+                margin-bottom: 20px;
+            }
+            .footer-section:last-child {
+                margin-bottom: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column; /* Stack sidebar and content */
+            }
+            .sidebar {
+                width: 100%;
+                height: auto;
+                padding: 15px;
+                flex-direction: row;
+                justify-content: space-around;
+                align-items: center;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            }
+            .profile-section {
+                border-bottom: none;
+                padding-bottom: 0;
+                margin-bottom: 0;
+                flex-grow: 1;
+            }
+            .sidebar-nav {
+                display: none; /* Hide main nav in small screens, could be toggleable */
+            }
+            .top-header {
+                font-size: 16px;
+                padding: 8px 15px;
+            }
+            .page-title {
+                font-size: 26px;
+            }
+            .management-section {
+                padding: 20px;
+            }
+            .service-table th,
+            .service-table td {
+                padding: 10px;
+                font-size: 14px;
+            }
+            /* Make table responsive on small screens */
+            .service-table thead {
+                display: none; /* Hide table headers */
+            }
+            .service-table tr {
+                display: block; /* Make rows stack vertically */
+                margin-bottom: 15px;
+                border: 1px solid #eee;
+                border-radius: 8px;
+                overflow: hidden;
+            }
+            .service-table td {
+                display: block; /* Make cells stack vertically */
+                text-align: right;
+                padding-left: 50%; /* Space for pseudo-element label */
+                position: relative;
+                border-bottom: 1px dashed #eee; /* Dotted line separator for cells */
+            }
+            .service-table td::before {
+                content: attr(data-label); /* Use data-label for the pseudo-header */
+                position: absolute;
+                left: 10px;
+                width: 45%;
+                text-align: left;
+                font-weight: 600;
+                color: #555;
+            }
+            .service-table td:last-child {
+                border-bottom: none; /* No border for the last cell */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-section {
+                height: 150px;
+            }
+            .search-bar {
+                width: 80%;
+            }
+            .page-title {
+                font-size: 22px;
+            }
+            .profile-section {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
 <body>
-<nav class="navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="/dashboard_laa">Dashboard</a>
-    </div>
-</nav>
-
-<div class="container mt-4">
-    <h2 class="mb-4">Daftar Mata Kuliah</h2>
-    <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addMataKuliahModal">Tambah Mata Kuliah</button>
-    <div class="row" id="mataKuliahList">
-        <!-- Cards will be dynamically inserted here -->
-    </div>
-</div>
-
-<!-- Modal Tambah/Edit Mata Kuliah -->
-<div class="modal fade" id="addMataKuliahModal" tabindex="-1" aria-labelledby="addMataKuliahModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addMataKuliahModalLabel">Tambah Mata Kuliah</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="mataKuliahForm">
-                    <div class="mb-3">
-                        <label for="nama" class="form-label">Nama Mata Kuliah</label>
-                        <input type="text" class="form-control" id="nama" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="kode" class="form-label">Kode Mata Kuliah</label>
-                        <input type="text" class="form-control" id="kode" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="sks" class="form-label">SKS</label>
-                        <input type="number" class="form-control" id="sks" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary" id="submitButton">Simpan</button>
-                </form>
-            </div>
+    <aside class="sidebar">
+        <div class="profile-section">
+            <img src="https://via.placeholder.com/80x80/FF69B4/FFFFFF?text=P" alt="Profile Picture" class="profile-pic">
+            <div class="profile-name">Zahra Audia Zulfa</div>
+            <div class="profile-role">Admin</div>
         </div>
-    </div>
-</div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="#" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li>
+                    <a href="#"><i class="fas fa-cogs"></i> Manage Services</a>
+                    <ul class="submenu">
+                        <li><a href="#"><i class="fas fa-plus-circle"></i> Add Service</a></li>
+                        <li><a href="#"><i class="fas fa-edit"></i> Edit / Delete Service</a></li>
+                        <li><a href="#"><i class="fas fa-list"></i> Service List</a></li>
+                    </ul>
+                </li>
+                <li><a href="#"><i class="fas fa-users"></i> Manage Customers</a></li>
+                <li><a href="#"><i class="fas fa-calendar-alt"></i> Manage Reservations</a></li>
+                <li><a href="#"><i class="fas fa-chart-line"></i> Reports</a></li>
+            </ul>
+        </nav>
+    </aside>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    let editingMataKuliahId = null; // ID Mata Kuliah yang sedang diedit
+    <main class="content-area">
+        <header class="top-header">
+            <div>NAZYSHINE</div>
+            <nav class="top-nav">
+                <a href="#">Home</a>
+                <a href="#">Service</a>
+                <a href="#">Logout</a>
+            </nav>
+        </header>
 
-    // Fetch Mata Kuliah Data
-    const fetchMataKuliah = async () => {
-        const response = await fetch('/api/matakuliah');
-        const data = await response.json();
-        const listContainer = document.getElementById('mataKuliahList');
-        listContainer.innerHTML = ''; // Clear existing cards
-        data.forEach(matkul => {
-            const card = `
-                <div class="col-md-4 mb-3">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">ID Mata Kuliah : ${matkul.id}</h5>
-                            <h5 class="card-title">${matkul.nama}</h5>
-                            <h6 class="card-subtitle mb-2 text-muted">Kode: ${matkul.kode}</h6>
-                            <p class="card-text">SKS: ${matkul.sks}</p>
-                            <button class="btn btn-primary btn-sm" onclick="editMataKuliah(${matkul.id})">Edit</button>
-                            <button class="btn btn-danger btn-sm" onclick="deleteMataKuliah(${matkul.id})">Hapus</button>
-                        </div>
-                    </div>
+        <section class="hero-section">
+            <div class="search-bar">
+                <input type="text" placeholder="Search Service...">
+            </div>
+        </section>
+
+        <section class="management-section">
+            <h1 class="page-title">Manage Services</h1>
+            
+            <div class="service-table-container">
+                <table class="service-table">
+                    <thead>
+                        <tr>
+                            <th>Service Name</th>
+                            <th>Price</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td data-label="Service Name">Haircut</td>
+                            <td data-label="Price">IDR 2.000.000</td>
+                            <td data-label="Action" class="action-buttons">
+                                <button title="Edit"><i class="far fa-pen-to-square"></i></button>
+                                <button title="Delete"><i class="fas fa-times-circle"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td data-label="Service Name">Hair Color</td>
+                            <td data-label="Price">IDR 4.000.000</td>
+                            <td data-label="Action" class="action-buttons">
+                                <button title="Edit"><i class="far fa-pen-to-square"></i></button>
+                                <button title="Delete"><i class="fas fa-times-circle"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td data-label="Service Name">Manicure/Pedicure</td>
+                            <td data-label="Price">IDR 1.000.000</td>
+                            <td data-label="Action" class="action-buttons">
+                                <button title="Edit"><i class="far fa-pen-to-square"></i></button>
+                                <button title="Delete"><i class="fas fa-times-circle"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td data-label="Service Name">Facial Treatment</td>
+                            <td data-label="Price">IDR 2.800.000</td>
+                            <td data-label="Action" class="action-buttons">
+                                <button title="Edit"><i class="far fa-pen-to-square"></i></button>
+                                <button title="Delete"><i class="fas fa-times-circle"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td data-label="Service Name">Massage</td>
+                            <td data-label="Price">IDR 1.200.000</td>
+                            <td data-label="Action" class="action-buttons">
+                                <button title="Edit"><i class="far fa-pen-to-square"></i></button>
+                                <button title="Delete"><i class="fas fa-times-circle"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="add-new-service">
+                <a href="#"><i class="fas fa-plus"></i> Add New Service</a>
+            </div>
+        </section>
+
+        <footer class="footer-admin">
+            <div class="footer-section">
+                <h3>NAZYSHINE</h3>
+                <p>Manajemen Admin</p>
+                <p>Ready to get started?</p>
+                <a href="#" class="arrow-link"><i class="fas fa-arrow-right"></i></a>
+            </div>
+            <div class="footer-section">
+                <h3>Services</h3>
+                <ul>
+                    <li><a href="#">Service Data</a></li>
+                    <li><a href="#">Service Type Entry</a></li>
+                    <li><a href="#">Service Status</a></li>
+                    <li><a href="#">Prices and Discounts</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <ul>
+                    <li><a href="#">Terms & Conditions</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                </ul>
+                <div class="footer-social-icons">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
                 </div>
-            `;
-            listContainer.innerHTML += card;
-        });
-    };
-
-    // Add/Edit Mata Kuliah
-    document.getElementById('mataKuliahForm').addEventListener('submit', async (event) => {
-        event.preventDefault();
-        const nama = document.getElementById('nama').value;
-        const kode = document.getElementById('kode').value;
-        const sks = document.getElementById('sks').value;
-
-        if (editingMataKuliahId) {
-            // Update existing Mata Kuliah
-            await fetch(`/api/matakuliah/${editingMataKuliahId}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ nama, kode, sks })
-            });
-        } else {
-            // Add new Mata Kuliah
-            await fetch('/api/matakuliah', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ nama, kode, sks })
-            });
-        }
-
-        fetchMataKuliah();
-        document.getElementById('mataKuliahForm').reset();
-        const modal = bootstrap.Modal.getInstance(document.getElementById('addMataKuliahModal'));
-        modal.hide();
-        editingMataKuliahId = null; // Reset editing ID
-        document.getElementById('addMataKuliahModalLabel').innerText = 'Tambah Mata Kuliah';
-        document.getElementById('submitButton').innerText = 'Simpan';
-    });
-
-    // Edit Mata Kuliah
-    const editMataKuliah = async (id) => {
-        editingMataKuliahId = id;
-        const response = await fetch(`/api/matakuliah/${id}`);
-        const matkul = await response.json();
-
-        // Fill form with existing data
-        document.getElementById('nama').value = matkul.nama;
-        document.getElementById('kode').value = matkul.kode;
-        document.getElementById('sks').value = matkul.sks;
-
-        document.getElementById('addMataKuliahModalLabel').innerText = 'Edit Mata Kuliah';
-        document.getElementById('submitButton').innerText = 'Update';
-
-        // Show modal
-        const modal = new bootstrap.Modal(document.getElementById('addMataKuliahModal'));
-        modal.show();
-    };
-
-    // Delete Mata Kuliah
-    const deleteMataKuliah = async (id) => {
-        if (confirm('Yakin ingin menghapus mata kuliah ini?')) {
-            await fetch(`/api/matakuliah/${id}`, { method: 'DELETE' });
-            fetchMataKuliah();
-        }
-    };
-
-    // Load data on page load
-    fetchMataKuliah();
-</script>
+            </div>
+            <div class="footer-section">
+                <p>+ TAMBAH</p>
+            </div>
+        </footer>
+    </main>
 </body>
 </html>
