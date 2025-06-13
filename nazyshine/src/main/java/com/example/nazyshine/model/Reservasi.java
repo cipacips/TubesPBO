@@ -1,3 +1,4 @@
+// src/main/java/com/example/nazyshine/model/Reservasi.java
 package com.example.nazyshine.model;
 
 import java.util.Date;
@@ -25,7 +26,7 @@ public class Reservasi {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id; // Tipe data ID adalah Long, konsisten
 
     @Temporal(TemporalType.DATE)
     private Date tanggal;
@@ -36,7 +37,7 @@ public class Reservasi {
     @ManyToOne
     @JoinColumn(name = "customer_id")
     @JsonIgnore
-    private Pelanggan customer;
+    private Pelanggan customer; // Nama field di sini harus konsisten dengan mappedBy di Pelanggan
 
     @ManyToOne
     @JoinColumn(name = "layanan_id")
@@ -93,7 +94,7 @@ public class Reservasi {
 
     /**
      * Mengubah status reservasi.
-     * 
+     *
      * @param status Status baru yang akan diset.
      */
     public void ubahStatus(StatusReservasi status) {
@@ -102,7 +103,7 @@ public class Reservasi {
 
     /**
      * Mengecek apakah reservasi ini bentrok. Saat ini hanya placeholder.
-     * 
+     *
      * @return false selalu, perlu logika tambahan jika ingin mendeteksi bentrok sebenarnya.
      */
     public boolean cekBentrok() {

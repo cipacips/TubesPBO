@@ -1,101 +1,103 @@
+// src/main/java/com/example/nazyshine/controller/ReservasiController.java
 package com.example.nazyshine.controller;
 
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestParam; // Used for request parameters
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.nazyshine.model.Reservasi; // Changed from MataKuliahMahasiswa
-import com.example.nazyshine.repository.ReservasiRepository; // Changed from MataKuliahMahasiswaRepository
-import com.example.nazyshine.service.ReservasiService; // Changed from MataKuliahMahasiswaService
+import com.example.nazyshine.model.Reservasi;
+import com.example.nazyshine.model.Pelanggan; // To get customer's reservations
+import com.example.nazyshine.model.StatusReservasi; // To update reservation status
+import com.example.nazyshine.service.ReservasiService;
+import com.example.nazyshine.service.PelangganService; // To retrieve customer for filtering reservations
 
 /**
- * REST controller for managing the relationship between Customers and Layanan (services).
- *
- * <p>This controller provides APIs for the following operations:
- * - Assigning a Customer to a Layanan
- * - Deleting the relationship between a Customer and a Layanan
- * - Retrieving details of the relationship
- * - Updating a Customer's grades for a specific Layanan</p>
+ * ReservasiController is a REST controller that handles operations for the Reservasi entity.
+ * It provides endpoints for creating, retrieving, updating status, and deleting reservations.
  */
 @RestController
-@RequestMapping("/api/reservasi") // Changed endpoint path
+@RequestMapping("/api/reservasi")
 public class ReservasiController {
 
     @Autowired
-    private ReservasiService service; // Changed service reference
+    private ReservasiService reservasiService;
 
     @Autowired
-    private ReservasiRepository reservasiRepository; // Changed repository reference
+    private PelangganService pelangganService; // Injeksi PelangganService untuk mendapatkan data pelanggan
 
     /**
-     * Assigns a Customer to a Layanan.
-     *
-     * @param customerId ID of the Customer
-     * @param layananId ID of the Layanan
-     * @return ResponseEntity containing the created Reservasi object
+     * Creates a new reservation by assigning a Layanan to a Pelanggan.
+     * @param customerId ID of the customer making the reservation.
+     * @param layananId ID of the service being reserved.
+     * @return a ResponseEntity containing the created Reservasi object and HTTP status 201 Created.
      */
-    @PostMapping("/assign")
-    public ResponseEntity<Reservasi> assignLayananToCustomer( // Changed method name
-            @RequestParam Long customerId,
-            @RequestParam Long layananId) { // Changed parameter name
-        System.out.println("Assigning Customer ID: " + customerId + " to Layanan ID: " + layananId);
-        Reservasi assigned = service.assignLayananToCustomer(customerId, layananId); // Changed service method call
-        return ResponseEntity.ok(assigned);
+    @PostMapping("/create")
+    public ResponseEntity<Reservasi> createReservation(
+            @RequestParam Integer customerId, // Customer ID is Integer
+            @RequestParam Long layananId) {   // Layanan ID is Long
+        Reservasi createdReservasi = reservasiService.assignLayananToCustomer(customerId, layananId);
+        return new ResponseEntity<>(createdReservasi, HttpStatus.CREATED);
     }
 
     /**
-     * Deletes the relationship between a Customer and a Layanan based on their IDs.
-     *
-     * @param customerId ID of the Customer
-     * @param layananId ID of the Layanan
-     * @return ResponseEntity with no content (204 No Content)
-     */
-    @DeleteMapping("/delete")
-    public ResponseEntity<Void> deleteReservasiByParams( // Changed method name
-            @RequestParam Long customerId,
-            @RequestParam Long layananId) { // Changed parameter name
-        service.deleteReservasiByParams(customerId, layananId); // Changed service method call
-        return ResponseEntity.noContent().build();
-    }
-
-    /**
-     * Retrieves the relationship details between a Customer and a Layanan by its ID.
-     *
-     * @param id ID of the Reservasi relationship
-     * @return ResponseEntity containing the Reservasi object with the specified ID
+     * Retrieves a reservation by its ID.
+     * @param id the ID of the reservation to retrieve.
+     * @return a ResponseEntity containing the Reservasi record with the specified ID.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Reservasi> getReservasiById(@PathVariable Long id) { // Changed method signature
-        Reservasi reservasi = service.getById(id); // Changed variable name
-        return ResponseEntity.ok(reservasi);
+    public ResponseEntity<Reservasi> getReservationById(@PathVariable Long id) { // ID type is consistent with Reservasi.id (Long)
+        return ResponseEntity.ok(reservasiService.getById(id));
     }
 
     /**
-     * Updates a Customer's grades for a specific Layanan.
-     *
-     * @param id ID of the Reservasi relationship
-     * @param uts UTS grade
-     * @param uas UAS grade
-     * @param kuis Quiz grade
-     * @return ResponseEntity containing a confirmation message that the grades have been updated
+     * Retrieves all reservations for a specific customer.
+     * @param customerId ID of the customer whose reservations are to be retrieved.
+     * @return a ResponseEntity containing a list of Reservasi for the specified customer.
      */
-    @PostMapping("/update-nilai")
-    public ResponseEntity<?> updateNilai(@RequestParam Long id, @RequestParam int uts, @RequestParam int uas, @RequestParam int kuis) {
-        Reservasi reservasi = reservasiRepository.findById(id) // Changed variable name and repository
-                .orElseThrow(() -> new RuntimeException("Data not found"));
+    @GetMapping("/customer/{customerId}")
+    public ResponseEntity<List<Reservasi>> getReservationsByCustomer(@PathVariable Integer customerId) {
+        Pelanggan customer = pelangganService.getPelangganById(customerId); // Retrieve the customer first
+        List<Reservasi> customerReservations = reservasiService.findByCustomer(customer);
+        return ResponseEntity.ok(customerReservations);
+    }
 
-        reservasi.setUts(uts);
-        reservasi.setUas(uas);
-        reservasi.setKuis(kuis);
+    /**
+     * Updates the status of an existing reservation.
+     * @param id the ID of the reservation to update.
+     * @param newStatus the new status for the reservation (e.g., PENDING, DIKONFIRMASI, SELESAI).
+     * @return a ResponseEntity containing the updated Reservasi object.
+     */
+    @PutMapping("/{id}/status")
+    public ResponseEntity<Reservasi> updateReservationStatus(
+            @PathVariable Long id,
+            @RequestParam StatusReservasi newStatus) {
+        Reservasi reservasi = reservasiService.getById(id);
+        reservasi.ubahStatus(newStatus); // Use the method from the model
+        Reservasi updatedReservasi = reservasiService.save(reservasi); // Save the updated reservation
+        return ResponseEntity.ok(updatedReservasi);
+    }
 
-        // Automatically calculate total score and grade (assuming these are still relevant for "Layanan")
-        reservasiRepository.save(reservasi);
-        return ResponseEntity.ok("Score Updated !!.");
+    /**
+     * Deletes a reservation based on customer ID and Layanan ID.
+     * @param customerId ID of the customer associated with the reservation.
+     * @param layananId ID of the service associated with the reservation.
+     * @return a ResponseEntity with no content after the reservation is deleted.
+     */
+    @DeleteMapping("/delete")
+    public ResponseEntity<Void> deleteReservationByParams(
+            @RequestParam Integer customerId,
+            @RequestParam Long layananId) {
+        reservasiService.deleteReservasiByParams(customerId, layananId);
+        return ResponseEntity.noContent().build();
     }
 }

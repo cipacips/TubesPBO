@@ -1,13 +1,13 @@
-package com.example.nazyshine; // Changed package name
+// src/main/java/com/example/nazyshine/NazyshineApplication.java
+package com.example.nazyshine;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class NazyshineApplication { // Changed class name
+public class NazyshineApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(NazyshineApplication.class, args); // Changed class reference
+        SpringApplication.run(NazyshineApplication.class, args);
     }
-
 }

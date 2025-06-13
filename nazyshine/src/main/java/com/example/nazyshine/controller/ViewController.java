@@ -1,3 +1,4 @@
+// src/main/java/com/example/nazyshine/controller/ViewController.java
 package com.example.nazyshine.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,87 +8,88 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import com.example.nazyshine.model.Pelanggan;
-import com.example.nazyshine.repository.PelangganRepository;
+import com.example.nazyshine.service.PelangganService; // Menggunakan PelangganService
 
 /**
  * Spring MVC Controller for managing navigation pages in a JSP-based application.
  *
  * <p>This controller handles various GET requests to display the dashboard,
  * CRUD pages, search pages, and specific features like service registration and
- * transcript display for customers.</p>
+ * reservation history display for customers and admins.</p>
  */
 @Controller
 public class ViewController {
 
     @Autowired
-    private PelangganRepository customerRepository;
+    private PelangganService pelangganService; // Menggunakan pelangganService, konsisten
 
     /**
      * Displays the customer dashboard page.
      *
      * @param auth Authentication object to get the username of the logged-in user
      * @param model Model to add attributes that will be passed to the JSP page
-     * @return The name of the JSP page `dashboard_customer`
+     * @return The name of the JSP page `dashboard_pelanggan`
      */
     @GetMapping("/dashboard_customer")
-    public String dashboardCustomer(Authentication auth, Model model) {
+    public String dashboardPelanggan(Authentication auth, Model model) {
         String username = auth.getName();
         model.addAttribute("username", username);
-        return "dashboard_customer";
+        return "dashboard_pelanggan"; // Nama JSP page konsisten
     }
 
     /**
-     * Displays the Pegawai dashboard page.
+     * Displays the Admin dashboard page.
      *
      * @param auth Authentication object to get the username of the logged-in user
      * @param model Model to add attributes that will be passed to the JSP page
-     * @return The name of the JSP page `dashboard_pegawai`
+     * @return The name of the JSP page `dashboard_admin`
      */
-    @GetMapping("/dashboard_pegawai")
-    public String dashboardPegawai(Authentication auth, Model model) {
+    @GetMapping("/dashboard_admin")
+    public String dashboardAdmin(Authentication auth, Model model) {
         String username = auth.getName();
         model.addAttribute("username", username);
-        return "dashboard_pegawai";
+        return "dashboard_admin"; // Nama JSP page konsisten
     }
 
     /**
-     * Displays the CRUD page for managing customers.
+     * Displays the CRUD page for managing customers (Pelanggan).
      *
-     * @return The name of the JSP page `crud_customer`
+     * @return The name of the JSP page `crud_pelanggan`
      */
-    @GetMapping("/dashboard_pegawai/customer")
-    public String showCrudCustomerPage() {
-        return "crud_customer";
+    @GetMapping("/dashboard_admin/pelanggan")
+    public String showCrudPelangganPage() {
+        return "crud_pelanggan"; // Nama JSP page konsisten
     }
 
     /**
-     * Displays the CRUD page for managing Pegawai.
+     * Displays the CRUD page for managing Admins.
      *
-     * @return The name of the JSP page `crud_pegawai`
+     * @return The name of the JSP page `crud_admin`
      */
-    @GetMapping("/dashboard_pegawai/pegawai")
-    public String showCrudPegawaiPage() {
-        return "crud_pegawai";
+    @GetMapping("/dashboard_admin/admin")
+    public String showCrudAdminPage() {
+        return "crud_admin"; // Nama JSP page konsisten
     }
 
     /**
-     * Displays the CRUD page for managing services.
+     * Displays the CRUD page for managing services (Layanan).
      *
      * @return The name of the JSP page `crud_layanan`
      */
-    @GetMapping("/dashboard_pegawai/layanan") // Changed endpoint path
-    public String showCrudLayananPage() { // Changed method name
-        return "crud_layanan"; // Changed JSP page name
+    @GetMapping("/dashboard_admin/layanan")
+    public String showCrudLayananPage() {
+        return "crud_layanan";
     }
 
     /**
-     * Displays the search page by customer NIM.
+     * Displays the search page by customer username.
+     * (As we use username for login, searching by username is more common than NIM/ID for general search)
      *
-     * @return The name of the JSP page `search_nim`
+     * @return The name of the JSP page `search_username`
      */
-    @GetMapping("/dashboard_pegawai/search_nim")
-    public String showNimPage() {
-        return "search_nim";
+    @GetMapping("/dashboard_admin/search_username")
+    public String showSearchUsernamePage() {
+        return "search_username"; // Nama JSP page konsisten
     }
 
     /**
@@ -95,71 +97,85 @@ public class ViewController {
      *
      * @return The name of the JSP page `search_id`
      */
-    @GetMapping("/dashboard_pegawai/search_id")
-    public String showIdPage() {
+    @GetMapping("/dashboard_admin/search_id")
+    public String showSearchByIdPage() {
         return "search_id";
     }
 
     /**
-     * Displays the search page by service.
+     * Displays the search page by service (Layanan).
      *
      * @return The name of the JSP page `search_layanan`
      */
-    @GetMapping("/dashboard_pegawai/search_layanan") // Changed endpoint path
-    public String showLayananPage() { // Changed method name
-        return "search_layanan"; // Changed JSP page name
+    @GetMapping("/dashboard_admin/search_layanan")
+    public String showSearchLayananPage() {
+        return "search_layanan";
     }
 
     /**
      * Displays the service registration page for customers.
      *
      * @param auth Authentication object to get the username of the logged-in user
-     * @param model Model to add the `customerId` attribute to the JSP page
+     * @param model Model to add the `pelangganId` attribute to the JSP page
      * @return The name of the JSP page `regis_layanan`
      */
-    @GetMapping("/dashboard_customer/registrasi_layanan") // Changed endpoint path
-    public String registrasiLayanan(Authentication auth, Model model) { // Changed method name
+    @GetMapping("/dashboard_customer/registrasi_layanan")
+    public String registrasiLayanan(Authentication auth, Model model) {
         String username = auth.getName();
-        Long customerId = findCustomerIdByUsername(username);
-        model.addAttribute("customerId", customerId);
-        return "regis_layanan"; // Changed JSP page name
+        Integer pelangganId = findPelangganIdByUsername(username); // Tipe ID konsisten
+        model.addAttribute("pelangganId", pelangganId); // Nama atribut konsisten
+        return "regis_layanan";
     }
 
     /**
-     * Displays the transcript page for customers.
+     * Displays the reservation history page for customers.
      *
      * @param auth Authentication object to get the username of the logged-in user
-     * @param model Model to add the `customerId` attribute to the JSP page
-     * @return The name of the JSP page `view_transkrip`
+     * @param model Model to add the `pelangganId` attribute to the JSP page
+     * @return The name of the JSP page `view_riwayat_reservasi`
      */
-    @GetMapping("/dashboard_customer/view_transkrip")
-    public String showCustomerTranskripPage(Authentication auth, Model model) {
+    @GetMapping("/dashboard_customer/riwayat_reservasi")
+    public String showCustomerRiwayatReservasiPage(Authentication auth, Model model) {
         String username = auth.getName();
-        Long customerId = findCustomerIdByUsername(username);
-        model.addAttribute("customerId", customerId);
-        return "view_transkrip";
+        Integer pelangganId = findPelangganIdByUsername(username); // Tipe ID konsisten
+        model.addAttribute("pelangganId", pelangganId); // Nama atribut konsisten
+        return "view_riwayat_reservasi"; // Nama JSP page konsisten
     }
 
     /**
-     * Displays the page for updating grades.
+     * Displays the page for updating reservation status (for Admin).
      *
-     * @return The name of the JSP page `update_nilai`
+     * @return The name of the JSP page `update_reservasi_status`
      */
-    @GetMapping("dashboard_pegawai/update-nilai-page")
-    public String updateNilaiPage() {
-        return "update_nilai";
+    @GetMapping("dashboard_admin/update_reservasi_status")
+    public String updateReservasiStatusPage() {
+        return "update_reservasi_status"; // Nama JSP page konsisten
     }
 
     /**
-     * Finds the customer ID based on the username.
+     * Redirects to the appropriate dashboard based on user's role after login.
+     * This endpoint is targeted by defaultSuccessUrl in SecurityConfig.
+     *
+     * @param auth Authentication object to determine user's role
+     * @return Redirect string to either customer or admin dashboard
+     */
+    @GetMapping("/dashboard")
+    public String redirectToDashboard(Authentication auth) {
+        if (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
+            return "redirect:/dashboard_admin";
+        }
+        return "redirect:/dashboard_customer";
+    }
+
+    /**
+     * Finds the customer (Pelanggan) ID based on the username.
+     * Uses PelangganService to retrieve customer details.
      *
      * @param username The username of the customer
-     * @return The ID of the customer if found
+     * @return The ID of the customer (Integer) if found
      * @throws RuntimeException if the customer is not found
      */
-    private Long findCustomerIdByUsername(String username) {
-        return customerRepository.findByUsername(username)
-                .map(Pelanggan::getId)
-                .orElseThrow(() -> new RuntimeException("Customer not found with username: " + username));
+    private Integer findPelangganIdByUsername(String username) { // Tipe return dan nama metode konsisten
+        return pelangganService.getPelangganByUsername(username).getId(); // Menggunakan pelangganService, konsisten
     }
 }

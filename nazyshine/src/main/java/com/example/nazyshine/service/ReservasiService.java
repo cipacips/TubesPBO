@@ -1,88 +1,99 @@
-package com.example.nazyshine.service; // Changed package name
+// src/main/java/com/example/nazyshine/service/ReservasiService.java
+package com.example.nazyshine.service;
+
+import java.util.Date;
+import java.util.List; // Import List
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.nazyshine.model.Pelanggan; // Changed model import
-import com.example.nazyshine.model.Layanan; // Changed model import
-import com.example.nazyshine.model.Reservasi; // Changed model import
-import com.example.nazyshine.repository.PelangganRepository; // Changed repository import
-import com.example.nazyshine.repository.ReservasiRepository; // Changed repository import
-import com.example.nazyshine.repository.LayananRepository; // Changed repository import
+import com.example.nazyshine.model.Pelanggan;
+import com.example.nazyshine.model.Layanan;
+import com.example.nazyshine.model.Reservasi;
+import com.example.nazyshine.repository.PelangganRepository;
+import com.example.nazyshine.repository.ReservasiRepository;
+import com.example.nazyshine.repository.LayananRepository;
 
-/**
- * Service layer for managing the {@link Reservasi} relationship.
- *
- * <p>This service class provides business logic for managing the relationship between
- * {@link Pelanggan} and {@link Layanan} entities. It handles assigning, removing, and retrieving
- * {@link Reservasi} instances from the database.</p>
- */
 @Service
-public class ReservasiService { // Changed class name
+public class ReservasiService {
 
     @Autowired
-    private ReservasiRepository reservasiRepository; // Changed repository name
+    private ReservasiRepository reservasiRepository;
 
     @Autowired
-    private PelangganRepository customerRepository; // Changed repository name
+    private PelangganRepository pelangganRepository; // Nama variabel disesuaikan
 
     @Autowired
-    private LayananRepository layananRepository; // Changed repository name
+    private LayananRepository layananRepository;
 
     /**
-     * Assigns a {@link Layanan} to a {@link Pelanggan}.
+     * Membuat reservasi antara pelanggan dan layanan.
+     * Tanggal reservasi disetel ke waktu sistem saat ini.
      *
-     * <p>This method creates a new {@link Reservasi} relationship between the given
-     * {@link Pelanggan} and {@link Layanan} by their respective IDs.</p>
-     *
-     * @param customerId The ID of the {@link Pelanggan} to assign.
-     * @param layananId The ID of the {@link Layanan} to assign.
-     * @return The saved {@link Reservasi} relationship.
-     * @throws RuntimeException if either the {@link Pelanggan} or {@link Layanan} is not found.
+     * @param customerId ID pelanggan (Integer)
+     * @param layananId  ID layanan (Long)
+     * @return Reservasi yang berhasil disimpan
      */
-    public Reservasi assignLayananToCustomer(Long customerId, Long layananId) { // Changed method name and parameters
-        Pelanggan customer = customerRepository.findById(customerId) // Changed variable and findById parameter
-                .orElseThrow(() -> new RuntimeException("Customer not found with ID: " + customerId)); // Changed error message
+    public Reservasi assignLayananToCustomer(Integer customerId, Long layananId) { // Tipe layananId diubah ke Long
+        Pelanggan customer = pelangganRepository.findById(customerId)
+                .orElseThrow(() -> new RuntimeException("Pelanggan not found with ID: " + customerId));
 
-        Layanan layanan = layananRepository.findById(layananId) // Changed variable and findById parameter
-                .orElseThrow(() -> new RuntimeException("Layanan not found with ID: " + layananId)); // Changed error message
+        Layanan layanan = layananRepository.findById(layananId)
+                .orElseThrow(() -> new RuntimeException("Layanan not found with ID: " + layananId));
 
-        Reservasi reservasi = new Reservasi(); // Changed variable name
-        reservasi.setCustomer(customer); // Changed method name and parameter
-        reservasi.setLayanan(layanan); // Changed method name and parameter
+        Reservasi reservasi = new Reservasi(customer, layanan);
+        reservasi.setTanggal(new Date()); // Tanggal reservasi disetel ke waktu sekarang
 
-        return reservasiRepository.save(reservasi); // Changed variable name
+        return reservasiRepository.save(reservasi);
     }
 
     /**
-     * Deletes a {@link Reservasi} relationship based on the given {@link Pelanggan} and
-     * {@link Layanan} IDs.
+     * Menghapus reservasi berdasarkan ID pelanggan dan layanan.
+     * Akan melempar RuntimeException jika reservasi tidak ditemukan.
      *
-     * <p>This method removes the relationship between a {@link Pelanggan} and a {@link Layanan}
-     * if it exists in the database.</p>
-     *
-     * @param customerId The ID of the {@link Pelanggan}.
-     * @param layananId The ID of the {@link Layanan}.
-     * @throws RuntimeException if the relationship is not found for the given IDs.
+     * @param customerId ID pelanggan (Integer)
+     * @param layananId  ID layanan (Long)
      */
-    public void deleteReservasiByParams(Long customerId, Long layananId) { // Changed method name and parameters
-        Reservasi relation = reservasiRepository.findByCustomerIdAndLayananId(customerId, layananId) // Changed variable, findBy method
-                .orElseThrow(() -> new RuntimeException("Reservation not found for Customer ID: " + customerId + " and Layanan ID: " + layananId)); // Changed error message
-        reservasiRepository.delete(relation);
+    public void deleteReservasiByParams(Integer customerId, Long layananId) { // Tipe layananId diubah ke Long
+        Optional<Reservasi> reservasiOpt = reservasiRepository.findByCustomerIdAndLayananId(customerId, layananId);
+
+        Reservasi reservasi = reservasiOpt.orElseThrow(() ->
+                new RuntimeException("Reservasi not found for Pelanggan ID: " + customerId + " and Layanan ID: " + layananId));
+
+        reservasiRepository.delete(reservasi);
     }
 
     /**
-     * Retrieves a {@link Reservasi} entity by its ID.
+     * Mengambil reservasi berdasarkan ID.
+     * Akan melempar RuntimeException jika reservasi tidak ditemukan.
      *
-     * <p>If no {@link Reservasi} entity is found with the provided ID, a {@link RuntimeException}
-     * is thrown.</p>
-     *
-     * @param id The ID of the {@link Reservasi} entity to retrieve.
-     * @return The {@link Reservasi} entity with the given ID.
-     * @throws RuntimeException if no {@link Reservasi} is found for the provided ID.
+     * @param id ID reservasi (Long)
+     * @return reservasi yang ditemukan
      */
-    public Reservasi getById(Long id) { // Changed method name
+    public Reservasi getById(Long id) { // Tipe ID diubah menjadi Long, konsisten
         return reservasiRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Reservasi not found with ID: " + id)); // Changed error message
+                .orElseThrow(() -> new RuntimeException("Reservasi not found with ID: " + id));
+    }
+
+    /**
+     * Mengambil semua reservasi untuk pelanggan tertentu.
+     *
+     * @param customer Objek Pelanggan yang reservasinya ingin dicari.
+     * @return Daftar reservasi untuk pelanggan yang diberikan.
+     */
+    public List<Reservasi> findByCustomer(Pelanggan customer) {
+        return reservasiRepository.findByCustomer(customer);
+    }
+
+    /**
+     * Menyimpan atau memperbarui reservasi.
+     * Metode ini digunakan untuk menyimpan reservasi baru atau memperbarui reservasi yang sudah ada.
+     *
+     * @param reservasi Objek Reservasi untuk disimpan atau diperbarui.
+     * @return Reservasi yang telah disimpan atau diperbarui.
+     */
+    public Reservasi save(Reservasi reservasi) {
+        return reservasiRepository.save(reservasi);
     }
 }

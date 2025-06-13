@@ -1,4 +1,5 @@
-package com.example.nazyshine.model; // Changed package name
+// src/main/java/com/example/nazyshine/model/Role.java
+package com.example.nazyshine.model;
 
 /**
  * Enumeration representing the roles in the Nazyshine application.
@@ -22,7 +23,7 @@ public enum Role {
     PELANGGAN,
 
     /**
-     * Role for Pegawai (employee) staff.
+     * Role for Admin staff.
      *
      * <p>Users with this role are administrative staff who can perform actions such as:
      * <ul>

@@ -1,3 +1,4 @@
+// src/main/java/com/example/nazyshine/model/User.java
 package com.example.nazyshine.model;
 
 import jakarta.persistence.Entity;
@@ -18,33 +19,19 @@ public abstract class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected int id;
+    protected Integer id; // Diubah dari int menjadi Integer untuk konsistensi dengan JpaRepository
 
     protected String nama;
     protected String email;
     protected String username;
     protected String password;
     protected Role role;
-    // Method abstract sesuai class diagram
-    public abstract boolean login();
 
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
-
-    public void logout() {
-        // logout logic
-    }
+    // Metode login() dan logout() dihapus karena otentikasi/otorisasi dihandle oleh Spring Security.
 
     // Getter dan Setter
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public Integer getId() { return id; }
+    public void setId(Integer id) { this.id = id; }
 
     public String getNama() { return nama; }
     public void setNama(String nama) { this.nama = nama; }
@@ -57,4 +44,7 @@ public abstract class User {
 
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
+
+    public Role getRole() { return role; }
+    public void setRole(Role role) { this.role = role; }
 }

@@ -1,3 +1,4 @@
+// src/main/java/com/example/nazyshine/model/Layanan.java
 package com.example.nazyshine.model;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public class Layanan {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id; // Tipe data ID adalah Long, konsisten
 
     private String nama;
 

@@ -1,10 +1,11 @@
+// src/main/java/com/example/nazyshine/controller/PelangganController.java
 package com.example.nazyshine.controller;
+
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,113 +16,69 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.nazyshine.model.Pelanggan;
-import com.example.nazyshine.model.Layanan; // Changed from MataKuliah
-import com.example.nazyshine.model.User;
-import com.example.nazyshine.repository.UserRepository;
 import com.example.nazyshine.service.PelangganService;
 
 /**
- * CustomerController is a REST controller that handles CRUD operations for Customer entities
- * and other related actions like fetching Layanan (service) information for a customer.
+ * PelangganController is a REST controller that handles CRUD operations for the Pelanggan entity.
+ * It provides endpoints for creating, reading, updating, and deleting Pelanggan records.
  */
 @RestController
-@RequestMapping("/api/customer")
+@RequestMapping("/api/pelanggan")
 public class PelangganController {
 
     @Autowired
-    private PelangganService customerService;
-
-    @Autowired
-    private UserRepository userRepository;
+    private PelangganService pelangganService;
 
     /**
-     * Creates a new Customer record.
-     * * @param customer the Customer object to be created.
-     * @return a ResponseEntity containing the created Customer object.
+     * Creates a new Pelanggan record.
+     * This endpoint is also used for user registration (pelanggan sign-up).
+     * @param pelanggan the Pelanggan object to be created.
+     * @return a ResponseEntity containing the created Pelanggan object and HTTP status 201 Created.
      */
-    @PostMapping
-    public ResponseEntity<Pelanggan> createCustomer(@RequestBody Pelanggan customer) {
-        return ResponseEntity.ok(customerService.createCustomer(customer));
+    @PostMapping("/register") // Added a specific endpoint for registration, can be exposed without authentication
+    public ResponseEntity<Pelanggan> registerPelanggan(@RequestBody Pelanggan pelanggan) {
+        Pelanggan createdPelanggan = pelangganService.createPelanggan(pelanggan);
+        return new ResponseEntity<>(createdPelanggan, HttpStatus.CREATED);
     }
 
     /**
-     * Retrieves all Customer records.
-     * * @return a ResponseEntity containing a list of all Customer records.
+     * Retrieves all Pelanggan records.
+     * @return a ResponseEntity containing a list of all Pelanggan records.
      */
     @GetMapping
-    public ResponseEntity<List<Pelanggan>> getAllCustomer() {
-        return ResponseEntity.ok(customerService.getAllCustomer());
+    public ResponseEntity<List<Pelanggan>> getAllPelanggan() {
+        return ResponseEntity.ok(pelangganService.getAllPelanggan());
     }
 
     /**
-     * Retrieves a Customer record by its ID.
-     * * @param id the ID of the Customer to retrieve.
-     * @return a ResponseEntity containing the Customer record with the specified ID, or an error message if the ID is invalid.
+     * Retrieves a Pelanggan record by its ID.
+     * @param id the ID of the Pelanggan record to retrieve.
+     * @return a ResponseEntity containing the Pelanggan record with the specified ID.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<?> getCustomerById(@PathVariable Long id) {
-        if (id == 0) {
-            return ResponseEntity.badRequest().body("ID Customer tidak valid.");
-        }
-        Pelanggan customer = customerService.getCustomerWithDetails(id);
-        return ResponseEntity.ok(customer);
+    public ResponseEntity<Pelanggan> getPelangganById(@PathVariable Integer id) { // ID type is consistent with Pelanggan.id (Integer)
+        return ResponseEntity.ok(pelangganService.getPelangganById(id));
     }
 
     /**
-     * Updates an existing Customer record.
-     * * @param id the ID of the Customer to update.
-     * @param customer the updated Customer object.
-     * @return a ResponseEntity containing the updated Customer object.
+     * Updates an existing Pelanggan record.
+     * @param id the ID of the Pelanggan record to update.
+     * @param pelanggan the updated Pelanggan object.
+     * @return a ResponseEntity containing the updated Pelanggan record.
      */
     @PutMapping("/{id}")
-    public ResponseEntity<Pelanggan> updateCustomer(@PathVariable Long id, @RequestBody Pelanggan customer) {
-        return ResponseEntity.ok(customerService.updateCustomer(id, customer));
+    public ResponseEntity<Pelanggan> updatePelanggan(@PathVariable Integer id, @RequestBody Pelanggan pelanggan) { // ID type is consistent
+        return ResponseEntity.ok(pelangganService.updatePelanggan(id, pelanggan));
     }
 
     /**
-     * Deletes a Customer record by its ID.
-     * * @param id the ID of the Customer to delete.
-     * @return a ResponseEntity with no content after the Customer record is deleted.
+     * Deletes a Pelanggan record by its ID.
+     * @param id the ID of the Pelanggan record to delete.
+     * @return a ResponseEntity with no content after the Pelanggan record is deleted.
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCustomer(@PathVariable Long id) {
-        customerService.deleteCustomer(id);
+    public ResponseEntity<Void> deletePelanggan(@PathVariable Integer id) { // ID type is consistent
+        pelangganService.deletePelanggan(id);
         return ResponseEntity.noContent().build();
-    }
-
-    /**
-     * Retrieves the list of Layanan (services) for a Customer by their NIM (customer ID).
-     * * @param nim the NIM (customer ID) of the Customer.
-     * @return a ResponseEntity containing a list of Layanan for the Customer with the specified NIM.
-     */
-    @GetMapping("/nim/{nim}/layanan") // Changed endpoint path
-    public ResponseEntity<List<Layanan>> getLayananByMemberId(@PathVariable String nim) { // Changed method name
-        List<Layanan> layananList = customerService.getLayananByMemberId(nim); // Changed service method call and variable name
-        return ResponseEntity.ok(layananList);
-    }
-
-    /**
-     * Retrieves the current logged-in Customer based on the authenticated username.
-     * * @param auth the Authentication object containing the current authenticated user's details.
-     * @return a ResponseEntity containing the Customer ID if the logged-in user is a Customer.
-     * @throws RuntimeException if the logged-in user is not a Customer.
-     */
-    @GetMapping("/current")
-    public ResponseEntity<?> getCurrentCustomer(Authentication auth) {
-        String username = auth.getName();
-        System.out.println("DEBUG: Logged-in username = " + username);
-
-        // Fetch user based on username
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found with username: " + username));
-
-        // Cast to Customer
-        if (user instanceof Pelanggan) {
-            Pelanggan customer = (Pelanggan) user;
-            System.out.println("DEBUG: Customer ID = " + customer.getId());
-            return ResponseEntity.ok(Map.of("customerId", customer.getId()));
-        } else {
-            throw new RuntimeException("Logged-in user is not a Customer");
-        }
     }
 }

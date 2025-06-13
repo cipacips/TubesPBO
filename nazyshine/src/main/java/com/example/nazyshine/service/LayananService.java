@@ -1,3 +1,4 @@
+// src/main/java/com/example/nazyshine/service/LayananService.java
 package com.example.nazyshine.service;
 
 import java.util.List;
@@ -34,7 +35,7 @@ public class LayananService {
     /**
      * Retrieves a {@link Layanan} entity by its ID.
      */
-    public Layanan getLayananById(int id) {
+    public Layanan getLayananById(Long id) { // Tipe ID adalah Long, konsisten
         return layananRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Layanan not found with ID: " + id));
     }
@@ -42,17 +43,18 @@ public class LayananService {
     /**
      * Updates an existing {@link Layanan} entity.
      */
-    public Layanan updateLayanan(int id, Layanan updatedLayanan) {
+    public Layanan updateLayanan(Long id, Layanan updatedLayanan) { // Tipe ID adalah Long, konsisten
         Layanan layanan = getLayananById(id);
         layanan.setNama(updatedLayanan.getNama());
         layanan.setHarga(updatedLayanan.getHarga());
+        layanan.setDurasi(updatedLayanan.getDurasi()); // Menambahkan update durasi
         return layananRepository.save(layanan);
     }
 
     /**
      * Deletes a {@link Layanan} entity by its ID.
      */
-    public void deleteLayanan(int id) {
+    public void deleteLayanan(Long id) { // Tipe ID adalah Long, konsisten
         layananRepository.deleteById(id);
     }
 }

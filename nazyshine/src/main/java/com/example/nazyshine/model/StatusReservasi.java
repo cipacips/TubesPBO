@@ -1,3 +1,4 @@
+// src/main/java/com/example/nazyshine/model/StatusReservasi.java
 package com.example.nazyshine.model;
 
 /**
