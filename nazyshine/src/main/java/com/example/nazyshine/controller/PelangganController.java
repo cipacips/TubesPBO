@@ -1,15 +1,12 @@
-// src/main/java/com/example/nazyshine/controller/PelangganController.java
 package com.example.nazyshine.controller;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,10 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.nazyshine.model.Pelanggan;
 import com.example.nazyshine.service.PelangganService;
 
-/**
- * PelangganController is a REST controller that handles CRUD operations for the Pelanggan entity.
- * It provides endpoints for creating, reading, updating, and deleting Pelanggan records.
- */
 @RestController
 @RequestMapping("/api/pelanggan")
 public class PelangganController {
@@ -29,17 +22,9 @@ public class PelangganController {
     @Autowired
     private PelangganService pelangganService;
 
-    /**
-     * Creates a new Pelanggan record.
-     * This endpoint is also used for user registration (pelanggan sign-up).
-     * @param pelanggan the Pelanggan object to be created.
-     * @return a ResponseEntity containing the created Pelanggan object and HTTP status 201 Created.
-     */
-    @PostMapping("/register") // Added a specific endpoint for registration, can be exposed without authentication
-    public ResponseEntity<Pelanggan> registerPelanggan(@RequestBody Pelanggan pelanggan) {
-        Pelanggan createdPelanggan = pelangganService.createPelanggan(pelanggan);
-        return new ResponseEntity<>(createdPelanggan, HttpStatus.CREATED);
-    }
+    // --- FUNGSI CREATE (REGISTER) DIHAPUS DARI CONTROLLER INI KARENA TIDAK ADA LAGI REGISTRASI PUBLIK ---
+    // Jika Anda ingin Admin bisa membuat Pelanggan, Anda perlu menambahkan endpoint baru
+    // yang terproteksi (misalnya POST ke /api/admin/pelanggan) atau menyesuaikan metode update.
 
     /**
      * Retrieves all Pelanggan records.
@@ -56,7 +41,7 @@ public class PelangganController {
      * @return a ResponseEntity containing the Pelanggan record with the specified ID.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Pelanggan> getPelangganById(@PathVariable Integer id) { // ID type is consistent with Pelanggan.id (Integer)
+    public ResponseEntity<Pelanggan> getPelangganById(@PathVariable Integer id) {
         return ResponseEntity.ok(pelangganService.getPelangganById(id));
     }
 
@@ -67,7 +52,7 @@ public class PelangganController {
      * @return a ResponseEntity containing the updated Pelanggan record.
      */
     @PutMapping("/{id}")
-    public ResponseEntity<Pelanggan> updatePelanggan(@PathVariable Integer id, @RequestBody Pelanggan pelanggan) { // ID type is consistent
+    public ResponseEntity<Pelanggan> updatePelanggan(@PathVariable Integer id, @RequestBody Pelanggan pelanggan) {
         return ResponseEntity.ok(pelangganService.updatePelanggan(id, pelanggan));
     }
 
@@ -77,7 +62,7 @@ public class PelangganController {
      * @return a ResponseEntity with no content after the Pelanggan record is deleted.
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePelanggan(@PathVariable Integer id) { // ID type is consistent
+    public ResponseEntity<Void> deletePelanggan(@PathVariable Integer id) {
         pelangganService.deletePelanggan(id);
         return ResponseEntity.noContent().build();
     }

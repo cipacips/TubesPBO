@@ -28,7 +28,6 @@
                 </div>
                 <button type="submit" class="primary-button">Login</button>
             </form>
-            <p class="form-link">Belum punya akun? <a href="/register.html">Daftar di sini</a></p>
             <% if (request.getParameter("error") != null) { %>
                 <p class="error-message">Username atau password salah!</p>
             <% } %>
